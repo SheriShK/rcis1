@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Filter by Price</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      color: #333;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #6a11cb;
+      text-decoration: none;
+      font-weight: 500;
+      margin-bottom: 30px;
+      padding: 10px 15px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      background: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .back-link:hover {
+      background: #6a11cb;
+      color: white;
+      transform: translateX(-5px);
+    }
+
+    .filter-card {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .filter-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      color: white;
+      font-size: 32px;
+    }
+
+    .filter-title {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #2d3748;
+    }
+
+    .filter-description {
+      color: #718096;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+
+    .filter-form {
+      text-align: left;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #4a5568;
+      font-weight: 500;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #a0aec0;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 15px 15px 15px 45px;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    input[type="number"]:focus {
+      border-color: #6a11cb;
+      box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.1);
+      outline: none;
+    }
+
+    .price-range {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+      font-size: 14px;
+      color: #718096;
+    }
+
+    .range-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 5px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(106, 17, 203, 0.4);
+    }
+
+    .filter-tips {
+      margin-top: 25px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      text-align: left;
+    }
+
+    .tips-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #4a5568;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .tips-list {
+      font-size: 13px;
+      color: #718096;
+      padding-left: 20px;
+    }
+
+    .tips-list li {
+      margin-bottom: 5px;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      color: #718096;
+      font-size: 14px;
+    }
+
+    /* Animation for the filter icon */
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .filter-icon {
+      animation: pulse 2s infinite;
+    }
+
+    /* Responsive design */
+    @media (max-width: 480px) {
+      .filter-card {
+        padding: 30px 20px;
+      }
+
+      .filter-title {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+
+  <div class="filter-card">
+    <div class="filter-icon">
+      <i class="fas fa-filter"></i>
+    </div>
+
+    <h1 class="filter-title">Filter by Price</h1>
+    <p class="filter-description">Find shoes that match your budget by setting a minimum price.</p>
+
+    <form th:method="POST" th:action="@{/filter}" class="filter-form">
+      <div class="form-group">
+        <label for="price">Minimum Price ($)</label>
+        <div class="input-wrapper">
+          <i class="fas fa-dollar-sign input-icon"></i>
+          <input type="number"
+                 name="price"
+                 id="price"
+                 placeholder="Enter minimum price"
+                 min="0"
+                 step="0.01"
+                 required>
+        </div>
+        <div class="price-range">
+          <span>Budget-friendly</span>
+          <span>Premium</span>
+        </div>
+        <div class="range-labels">
+          <span>$0</span>
+          <span>$50</span>
+          <span>$100+</span>
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn">
+        <i class="fas fa-search"></i> Find Shoes
+      </button>
+    </form>
+
+    <div class="filter-tips">
+      <div class="tips-title">
+        <i class="fas fa-lightbulb"></i> How It Works
+      </div>
+      <ul class="tips-list">
+        <li>Enter the minimum price to filter shoes</li>
+        <li>We'll show all shoes priced at or above your value</li>
+        <li>Leave at 0 to see all available shoes</li>
+        <li>Use decimal values for precise filtering (e.g., 49.99)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>Shoes Catalog &copy; 2023. All rights reserved.</p>
+  </div>
+</div>
+
+<script>
+  // Add some interactivity
+  document.addEventListener('DOMContentLoaded', function() {
+    const input = document.getElementById('price');
+
+    // Focus on the input when page loads
+    input.focus();
+
+    // Add input validation
+    input.addEventListener('input', function() {
+      if (this.value < 0) {
+        this.value = 0;
+      }
+    });
+
+    // Add a visual indicator for the price range
+    const priceRange = document.querySelector('.price-range');
+    const budgetText = priceRange.querySelector('span:first-child');
+    const premiumText = priceRange.querySelector('span:last-child');
+
+    input.addEventListener('input', function() {
+      const value = parseFloat(this.value) || 0;
+
+      // Reset colors
+      budgetText.style.color = '';
+      premiumText.style.color = '';
+
+      // Highlight based on value
+      if (value < 50) {
+        budgetText.style.color = '#6a11cb';
+        budgetText.style.fontWeight = '600';
+      } else if (value >= 100) {
+        premiumText.style.color = '#6a11cb';
+        premiumText.style.fontWeight = '600';
+      }
+    });
+  });
+</script>
+</body>
+</html>

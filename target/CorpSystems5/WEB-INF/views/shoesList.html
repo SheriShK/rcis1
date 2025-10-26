@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shoes Catalog</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #6a11cb;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .back-link:hover {
+            background: #6a11cb;
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-title i {
+            color: #6a11cb;
+        }
+
+        .add-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.4);
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+        }
+
+        th {
+            padding: 18px 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #e2e8f0;
+            transition: background 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        td {
+            padding: 15px;
+            color: #4a5568;
+        }
+
+        .shoe-name {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .shoe-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .color-sample {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+            border: 2px solid #e2e8f0;
+        }
+
+        .price-tag {
+            background: #edf2f7;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: #2d3748;
+            display: inline-block;
+        }
+
+        .size-badge {
+            background: #e2e8f0;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-edit {
+            background: #e6fffa;
+            color: #234e52;
+        }
+
+        .btn-edit:hover {
+            background: #b2f5ea;
+            transform: translateY(-2px);
+        }
+
+        .btn-delete {
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .btn-delete:hover {
+            background: #feb2b2;
+            transform: translateY(-2px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #718096;
+        }
+
+        .empty-state i {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: #cbd5e0;
+        }
+
+        .empty-state h3 {
+            font-size: 22px;
+            margin-bottom: 10px;
+            color: #4a5568;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #718096;
+            font-size: 14px;
+        }
+
+        /* Responsive design for mobile devices */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            th, td {
+                padding: 12px 8px;
+                font-size: 14px;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .table-container {
+                border-radius: 12px;
+            }
+
+            th:nth-child(1), td:nth-child(1) { /* ID */
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+
+        <h1 class="page-title">
+            <i class="fas fa-shoe-prints"></i> Shoes Catalog
+        </h1>
+
+        <a th:href="@{/addShoes}" class="add-btn">
+            <i class="fas fa-plus-circle"></i> Add Shoes
+        </a>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Brand</th>
+                <th>Color</th>
+                <th>Price</th>
+                <th>Size</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="shoe : ${shoes}" th:if="${shoes.size() > 0}">
+                <td th:text="${shoe.getId()}"></td>
+                <td>
+                    <span class="shoe-name" th:text="${shoe.getName()}"></span>
+                </td>
+                <td>
+                            <span class="shoe-brand">
+                                <i class="fas fa-tag"></i>
+                                <span th:text="${shoe.getBrand()}"></span>
+                            </span>
+                </td>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span class="color-sample" th:style="'background-color:' + ${shoe.getColor()}"></span>
+                        <span th:text="${shoe.getColor()}"></span>
+                    </div>
+                </td>
+                <td>
+                    <span class="price-tag" th:text="'$' + ${shoe.getPrice()}"></span>
+                </td>
+                <td>
+                    <span class="size-badge" th:text="${shoe.getSize()}"></span>
+                </td>
+                <td>
+                    <div class="actions">
+                        <a th:href="@{/{id}/edit(id=${shoe.getId()})}" class="btn btn-edit">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <form th:method="DELETE" th:action="@{/{id}(id=${shoe.getId()})}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete these shoes?')">
+                            <button type="submit" class="btn btn-delete">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            <tr th:if="${shoes.size() == 0}">
+                <td colspan="7">
+                    <div class="empty-state">
+                        <i class="fas fa-shoe-prints"></i>
+                        <h3>No Shoes Found</h3>
+                        <p>There are no shoes in the catalog yet.</p>
+                        <a th:href="@{/addShoes}" class="add-btn" style="margin-top: 20px;">
+                            <i class="fas fa-plus-circle"></i> Add First Pair
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="footer">
+        <p>Shoes Catalog &copy; 2023. All rights reserved.</p>
+    </div>
+</div>
+
+<script>
+    // Add confirmation before deletion
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteForms = document.querySelectorAll('form[th\\:method="DELETE"]');
+        deleteForms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                if (!confirm('Are you sure you want to delete these shoes?')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>
