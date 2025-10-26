@@ -1,7 +1,7 @@
 package com.example.controllers;
 
 import com.example.entities.Shoes;
-import com.example.services.ShoesService; // Используем интерфейс, а не реализацию
+import com.example.services.ShoesService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,28 +14,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Контроллер для обработки запросов, связанными с объектами Shoes
+ * Контроллер для обработки запросов, связанных с объектами Shoes
  */
 @Controller
 public class ShoesController {
 
-    private final ShoesService shoesService; // Используем интерфейс
+    private final ShoesService shoesService;
 
     @Autowired
     public ShoesController(ShoesService shoesService) {
         this.shoesService = shoesService;
     }
 
-    @GetMapping()
+    @GetMapping("/")
     public String index() {
         return "index";
     }
 
-    @GetMapping("/show")
-    public String showShoes(@RequestParam(name = "id") int id, Model model) {
+    @GetMapping("/shoes/{id}")
+    public String showShoes(@PathVariable("id") int id, Model model) {
         Shoes shoes = shoesService.findById(id);
-        if (shoes == null) { // Обработка случая, когда обувь не найдена
-            return "findError"; // Или перенаправление на страницу ошибки
+        if (shoes == null) {
+            return "findError";
         }
         model.addAttribute("shoes", shoes);
         return "show";
@@ -64,7 +64,7 @@ public class ShoesController {
             return "addShoes";
         }
         shoesService.insertShoes(shoes);
-        return "redirect:/shoesList"; // Перенаправляем на список, а не на корень
+        return "redirect:/shoesList";
     }
 
     @GetMapping("/find_by_id")
@@ -72,44 +72,40 @@ public class ShoesController {
         return "find_by_id";
     }
 
-    @PostMapping("/show")
+    @PostMapping("/find_by_id")
     public String toShoes(@RequestParam("id") int id) {
-        Shoes shoes = shoesService.findById(id); // Получаем обувь из сервиса
+        Shoes shoes = shoesService.findById(id);
         if (shoes == null) {
             return "findError";
         }
-        return "redirect:/show?id=" + id; // Используем id напрямую
+        return "redirect:/shoes/" + id;
     }
 
-    @GetMapping("/{id}/edit")
+    @GetMapping("/shoes/{id}/edit")
     public String edit(@PathVariable("id") int id, Model model) {
         Shoes shoes = shoesService.findById(id);
-        if (shoes == null) { // Обработка случая, когда обувь не найдена
-            return "findError"; // Или перенаправление на страницу ошибки
+        if (shoes == null) {
+            return "findError";
         }
         model.addAttribute("shoes", shoes);
         return "edit";
     }
 
-    @PatchMapping("/{id}/edit")
-    public String updateShoes(@ModelAttribute("shoes") @Valid Shoes shoes,
+    @PatchMapping("/shoes/{id}/edit")
+    public String updateShoes(@PathVariable("id") int id, @ModelAttribute("shoes") @Valid Shoes shoes,
                               BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "edit";
         }
+        shoes.setId(id);
         shoesService.update(shoes);
         return "redirect:/shoesList";
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/shoes/{id}")
     public String delete(@PathVariable("id") int id) {
         shoesService.delete(id);
         return "redirect:/shoesList";
-    }
-
-    @GetMapping("/filterShoesList")
-    public String filterShoesList(Model model) {
-        return "shoesList";
     }
 
     @GetMapping("/find_by_price")
