@@ -3,3 +3,6 @@ Java version - jdk-17.0.12
 
 Для запуска нужно создать бадзу данных.
 Зависимости в соответсвубщем файле в папке resources.
+
+https://github.com/SheriShK/rcis1
+git checkout 
