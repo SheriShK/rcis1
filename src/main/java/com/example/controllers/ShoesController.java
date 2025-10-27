@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,13 +45,22 @@ public class ShoesController {
     @GetMapping("/shoesList")
     public String shoesList(Model model) {
         Iterable<Shoes> shoeses = shoesService.findAll();
+
+        // Проверка на null, если findAll() вернул null, инициализируем пустой список
         List<Shoes> shoesList = new ArrayList<>();
-        for (Shoes shoe : shoeses) {
-            shoesList.add(shoe);
+        if (shoeses != null) {
+            for (Shoes shoe : shoeses) {
+                shoesList.add(shoe);
+            }
         }
+
+        // Добавляем в модель, чтобы передать в представление
         model.addAttribute("shoes", shoesList);
+
+        // Возвращаем имя представления (шаблон)
         return "shoesList";
     }
+
 
     @GetMapping("/addShoes")
     public String newShoes(@ModelAttribute("shoes") Shoes shoes) {
@@ -126,5 +136,11 @@ public class ShoesController {
         }
         model.addAttribute("shoes", shoesList);
         return new ModelAndView("shoesList", "shoesList", model);
+    }
+    @GetMapping("/buyShoe")
+    @ResponseBody  // Чтобы вернуть простой текст, а не view
+    public String buyShoe(@RequestParam int shoeId) {
+        shoesService.buyShoe(shoeId);  // Вызов метода для отправки сообщения о покупке
+        return "Вы успешно купили обувь с ID: " + shoeId;
     }
 }

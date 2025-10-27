@@ -1,0 +1,5 @@
+com\example\AdminNotification.class
+com\example\DispatcherServlet.class
+com\example\AdminNotificationConsumer.class
+com\example\AppConfig.class
+com\example\entities\Shoes.class

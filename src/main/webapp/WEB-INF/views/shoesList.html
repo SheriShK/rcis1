@@ -258,13 +258,19 @@
             th:nth-child(1), td:nth-child(1) { /* ID */
                 display: none;
             }
+            .btn-success {
+                background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+                color: white;
+            }
+            .btn-success:hover {
+                background: linear-gradient(135deg, #218838 0%, #1e7e34 100%);
+            }
         }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
-
         <h1 class="page-title">
             <i class="fas fa-shoe-prints"></i> Shoes Catalog
         </h1>
@@ -288,16 +294,16 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="shoe : ${shoes}" th:if="${shoes.size() > 0}">
+            <tr th:each="shoe : ${shoes}">
                 <td th:text="${shoe.getId()}"></td>
                 <td>
                     <span class="shoe-name" th:text="${shoe.getName()}"></span>
                 </td>
                 <td>
-                            <span class="shoe-brand">
-                                <i class="fas fa-tag"></i>
-                                <span th:text="${shoe.getBrand()}"></span>
-                            </span>
+                    <span class="shoe-brand">
+                        <i class="fas fa-tag"></i>
+                        <span th:text="${shoe.getBrand()}"></span>
+                    </span>
                 </td>
                 <td>
                     <div style="display: flex; align-items: center; gap: 8px;">
@@ -316,6 +322,9 @@
                         <a th:href="@{/{id}/edit(id=${shoe.getId()})}" class="btn btn-edit">
                             <i class="fas fa-edit"></i> Edit
                         </a>
+                        <a th:href="@{/buyShoe(shoeId=${shoe.getId()})}" class="btn btn-success">
+                            <i class="fas fa-shopping-cart"></i> Купить
+                        </a>
                         <form th:method="DELETE" th:action="@{/{id}(id=${shoe.getId()})}" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete these shoes?')">
                             <button type="submit" class="btn btn-delete">
                                 <i class="fas fa-trash"></i> Delete
@@ -324,7 +333,7 @@
                     </div>
                 </td>
             </tr>
-            <tr th:if="${shoes.size() == 0}">
+            <tr th:if="${#lists.isEmpty(shoes)}">
                 <td colspan="7">
                     <div class="empty-state">
                         <i class="fas fa-shoe-prints"></i>

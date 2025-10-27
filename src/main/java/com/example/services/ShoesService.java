@@ -20,4 +20,6 @@ public interface ShoesService {
     Shoes findById(int id);
 
     Iterable<Shoes> findByPriceGreaterThan(double price);
+
+    void buyShoe(int shoeId);  // Новый метод для покупки
 }
