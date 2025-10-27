@@ -5,4 +5,4 @@ Java version - jdk-17.0.12
 Зависимости в соответсвубщем файле в папке resources.
 
 https://github.com/SheriShK/rcis1
-git checkout 
+git checkout 234e62b4f2ea6451f859ec76f2b2982f7a48f370
