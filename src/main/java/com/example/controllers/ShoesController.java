@@ -1,7 +1,7 @@
 package com.example.controllers;
 
 import com.example.entities.Shoes;
-import com.example.services.ShoesService; // Используем интерфейс, а не реализацию
+import com.example.services.ShoesService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,18 +9,14 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Контроллер для обработки запросов, связанными с объектами Shoes
- */
 @Controller
 public class ShoesController {
 
-    private final ShoesService shoesService; // Используем интерфейс
+    private final ShoesService shoesService;
 
     @Autowired
     public ShoesController(ShoesService shoesService) {
@@ -33,10 +29,10 @@ public class ShoesController {
     }
 
     @GetMapping("/show")
-    public String showShoes(@RequestParam(name = "id") int id, Model model) {
+    public String showShoes(@RequestParam("id") int id, Model model) {
         Shoes shoes = shoesService.findById(id);
-        if (shoes == null) { // Обработка случая, когда обувь не найдена
-            return "findError"; // Или перенаправление на страницу ошибки
+        if (shoes == null) {
+            return "findError";
         }
         model.addAttribute("shoes", shoes);
         return "show";
@@ -45,22 +41,15 @@ public class ShoesController {
     @GetMapping("/shoesList")
     public String shoesList(Model model) {
         Iterable<Shoes> shoeses = shoesService.findAll();
-
-        // Проверка на null, если findAll() вернул null, инициализируем пустой список
         List<Shoes> shoesList = new ArrayList<>();
         if (shoeses != null) {
             for (Shoes shoe : shoeses) {
                 shoesList.add(shoe);
             }
         }
-
-        // Добавляем в модель, чтобы передать в представление
         model.addAttribute("shoes", shoesList);
-
-        // Возвращаем имя представления (шаблон)
         return "shoesList";
     }
-
 
     @GetMapping("/addShoes")
     public String newShoes(@ModelAttribute("shoes") Shoes shoes) {
@@ -74,7 +63,7 @@ public class ShoesController {
             return "addShoes";
         }
         shoesService.insertShoes(shoes);
-        return "redirect:/shoesList"; // Перенаправляем на список, а не на корень
+        return "redirect:/shoesList";
     }
 
     @GetMapping("/find_by_id")
@@ -84,18 +73,18 @@ public class ShoesController {
 
     @PostMapping("/show")
     public String toShoes(@RequestParam("id") int id) {
-        Shoes shoes = shoesService.findById(id); // Получаем обувь из сервиса
+        Shoes shoes = shoesService.findById(id);
         if (shoes == null) {
             return "findError";
         }
-        return "redirect:/show?id=" + id; // Используем id напрямую
+        return "redirect:/show?id=" + id;
     }
 
     @GetMapping("/{id}/edit")
     public String edit(@PathVariable("id") int id, Model model) {
         Shoes shoes = shoesService.findById(id);
-        if (shoes == null) { // Обработка случая, когда обувь не найдена
-            return "findError"; // Или перенаправление на страницу ошибки
+        if (shoes == null) {
+            return "findError";
         }
         model.addAttribute("shoes", shoes);
         return "edit";
@@ -137,10 +126,12 @@ public class ShoesController {
         model.addAttribute("shoes", shoesList);
         return new ModelAndView("shoesList", "shoesList", model);
     }
+
+    // ИСПРАВЛЕННЫЙ МЕТОД
     @GetMapping("/buyShoe")
-    @ResponseBody  // Чтобы вернуть простой текст, а не view
-    public String buyShoe(@RequestParam int shoeId) {
-        shoesService.buyShoe(shoeId);  // Вызов метода для отправки сообщения о покупке
+    @ResponseBody
+    public String buyShoe(@RequestParam("shoeId") int shoeId) {
+        shoesService.buyShoe(shoeId);
         return "Вы успешно купили обувь с ID: " + shoeId;
     }
 }
